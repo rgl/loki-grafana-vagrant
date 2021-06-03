@@ -1,0 +1,23 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/run/promtail/positions.yaml
+
+clients:
+  - url: @@loki_push_url@@
+
+scrape_configs:
+  - job_name: journal
+    journal:
+      max_age: 12h
+      labels:
+        job: systemd-journal
+    # see https://www.freedesktop.org/software/systemd/man/systemd.journal-fields.html#Trusted%20Journal%20Fields
+    # NB use `journalctl -n 1 -o json | jq .` to see an actual journal log message (including metadata).
+    relabel_configs:
+      - source_labels: [__journal__hostname]
+        target_label: host
+      - source_labels: [__journal__systemd_unit]
+        target_label: unit
