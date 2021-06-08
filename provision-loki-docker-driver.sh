@@ -16,20 +16,39 @@ docker plugin ls
 
 # reconfigure docker to use the loki log-driver.
 # see https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
-log_opts="$(jo \
-labels='worker_id' \
-loki-url="http://$loki_ip_address:3100/loki/api/v1/push"  \
-loki-external-labels='container_name={{.Name}},container_id={{.ID}}' \
-loki-relabel-config="\
+python3 <<EOF
+import json
+
+loki_relabel_config = '''\
+# drop filename, we have no use for it.
 - regex: filename
   action: labeldrop
-"
-)"
-jq 'del(."log-driver") | del(."log-opts") | ."log-driver" = $log_driver | ."log-opts" = $log_opts' \
-    --arg log_driver loki \
-    --argjson log_opts "$log_opts" \
-    /etc/docker/daemon.json \
-    | sponge /etc/docker/daemon.json
+'''
+
+loki_pipeline_stages = '''\
+'''
+
+# NB loki-relabel-config is executed once per container.
+# NB loki-pipeline-stages is executed once per container log line.
+# NB the filename label is set once per container.
+# NB the source label is set per container log line.
+log_opts = {
+    'labels': 'worker_id',
+    'loki-url': 'http://$loki_ip_address:3100/loki/api/v1/push',
+    'loki-external-labels': 'job=container,container_name={{.Name}}',
+    'loki-relabel-config': loki_relabel_config,
+    'loki-pipeline-stages': loki_pipeline_stages,
+}
+
+with open('/etc/docker/daemon.json', 'r') as f:
+    config = json.load(f)
+
+config['log-driver'] = 'loki'
+config['log-opts'] = log_opts
+
+with open('/etc/docker/daemon.json', 'w') as f:
+    json.dump(config, f, indent=4)
+EOF
 systemctl restart docker
 
 # leave an example running.
