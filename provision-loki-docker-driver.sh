@@ -38,6 +38,8 @@ log_opts = {
     'loki-external-labels': 'job=container,container_name={{.Name}}',
     'loki-relabel-config': loki_relabel_config,
     'loki-pipeline-stages': loki_pipeline_stages,
+    'max-size': '10m',
+    'max-file': '3',
 }
 
 with open('/etc/docker/daemon.json', 'r') as f:
