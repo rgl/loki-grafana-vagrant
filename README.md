@@ -36,26 +36,35 @@ Explore the logs with logcli:
 ```bash
 vagrant ssh loki
 
-# list all labels.
-logcli labels -q
+# list all series/streams.
+logcli series '{}' | sort
 
-# list all container names.
-logcli labels -q container_name
+# list all series/streams from the ubuntu host.
+logcli series '{host="ubuntu"}' | sort
+
+# list all labels.
+logcli labels -q | sort
+
+# list all sources.
+logcli labels -q source | sort
 
 # get all the systemd-journal logs.
 logcli query '{job="systemd-journal"}'
 
 # get all the docker service logs.
-logcli query '{job="systemd-journal",unit="docker.service"}'
+logcli query '{job="systemd-journal",source="docker.service"}'
+
+# get all the docker plugins logs.
+logcli query '{job="systemd-journal",source="docker.service"} |~ " plugin="'
 
 # tail all the container logs.
-logcli query --tail '{container_name!=""}'
+logcli query --tail '{job="container"}'
 
 # tail the date-ticker container logs.
-logcli query --tail '{container_name="date-ticker"}'
+logcli query --tail '{job="container",source="date-ticker"}'
 
 # raw tail the date-ticker container logs.
-logcli query --tail --output raw '{container_name="date-ticker"}'
+logcli query --tail --output raw '{job="container",source="date-ticker"}'
 ```
 
 ## Alternatives

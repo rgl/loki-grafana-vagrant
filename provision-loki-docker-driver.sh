@@ -29,6 +29,11 @@ loki_relabel_config = '''\
 '''
 
 loki_pipeline_stages = '''\
+# rename container_name to source.
+- labels:
+    source: container_name
+- labeldrop:
+    - container_name
 '''
 
 # NB loki-relabel-config is executed once per container.
