@@ -71,5 +71,5 @@ docker run \
     --restart unless-stopped \
     --name date-ticker \
     --label worker_id=test \
-    debian:buster-slim \
-    bash -c 'while true; do date; sleep 15; done'
+    alpine:3.13 \
+        sh -c 'while true; do date; sleep 15; done'
