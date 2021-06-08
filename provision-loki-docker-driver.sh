@@ -61,6 +61,10 @@ with open('/etc/docker/daemon.json', 'w') as f:
 EOF
 systemctl restart docker
 
+# docker plugins are running as containerd containers in the plugins.moby namespace.
+ctr --namespace plugins.moby containers ls
+ctr --namespace plugins.moby tasks ls
+
 # leave an example running.
 docker run \
     -d \
