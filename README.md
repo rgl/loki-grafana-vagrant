@@ -80,6 +80,8 @@ logcli query --tail --output raw '{job="container",source="date-ticker"}'
   * https://grafana.com/docs/loki/latest/getting-started/logcli/
   * https://grafana.com/docs/loki/latest/configuration/examples/#complete-local-config
   * https://grafana.com/docs/loki/latest/installation/docker/
+* Loki Docker Driver:
+  * [Configuring the Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/)
 * Grafana:
   * https://grafana.com/docs/grafana/latest/administration/configure-docker/
   * https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources
