@@ -5,11 +5,13 @@ loki_ip_address="${1:-10.11.12.2}"
 
 # install the loki docker log driver plugin.
 # see https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
-docker plugin \
-    install \
-    grafana/loki-docker-driver:2.2.1 \
+# see https://hub.docker.com/r/grafana/loki-docker-driver
+# see https://github.com/grafana/loki/tree/main/clients/cmd/docker-driver
+docker plugin install \
     --alias loki \
-    --grant-all-permissions
+    --grant-all-permissions \
+    grafana/loki-docker-driver:2.2.1 \
+        LOG_LEVEL=debug
 docker plugin ls
 
 # reconfigure docker to use the loki log-driver.
