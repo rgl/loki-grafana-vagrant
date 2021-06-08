@@ -23,6 +23,9 @@ loki_relabel_config = '''\
 # drop filename, we have no use for it.
 - regex: filename
   action: labeldrop
+# always use the host hostname as the host that generated the container logs.
+- target_label: host
+  replacement: '$(hostname)'
 '''
 
 loki_pipeline_stages = '''\
