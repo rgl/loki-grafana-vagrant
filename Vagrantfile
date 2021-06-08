@@ -44,7 +44,7 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'provision-docker-compose.sh'
     config.vm.provision :shell, path: 'provision-loki.sh'
     config.vm.provision :shell, path: 'provision-promtail.sh', args: [$loki_ip_address]
-    config.vm.provision :shell, path: 'provision-grafana.sh'
+    config.vm.provision :shell, path: 'provision-grafana.sh', args: [$loki_ip_address]
   end
 
   config.vm.define :ubuntu do |config|
