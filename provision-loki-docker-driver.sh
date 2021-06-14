@@ -40,10 +40,12 @@ loki_pipeline_stages = '''\
 # NB loki-pipeline-stages is executed once per container log line.
 # NB the filename label is set once per container.
 # NB the source label is set per container log line.
+# NB its not possible to get a label from the docker daemon itself.
+#    see https://github.com/grafana/loki/issues/3847
 log_opts = {
-    'labels': 'worker_id',
+    'labels': 'workflow_id',
     'loki-url': 'http://$loki_ip_address:3100/loki/api/v1/push',
-    'loki-external-labels': 'job=container,container_name={{.Name}}',
+    'loki-external-labels': 'job=container,worker_id=test-worker-id,container_name={{.Name}}',
     'loki-relabel-config': loki_relabel_config,
     'loki-pipeline-stages': loki_pipeline_stages,
     'max-size': '10m',
@@ -70,6 +72,6 @@ docker run \
     -d \
     --restart unless-stopped \
     --name date-ticker \
-    --label worker_id=test \
+    --label workflow_id=test-workflow-id \
     alpine:3.13 \
         sh -c 'while true; do date; sleep 15; done'
