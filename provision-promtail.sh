@@ -7,8 +7,10 @@ loki_ip_address="${1:-10.11.12.2}"
 # see https://hub.docker.com/r/grafana/promtail/tags
 loki_version="2.3.0"
 
-mkdir promtail
-cd promtail
+# destroy the existing promtail container and data.
+docker rm --force promtail && rm -rf ~/promtail && mkdir ~/promtail
+
+cd ~/promtail
 
 # configure promtail.
 # see https://grafana.com/docs/loki/latest/clients/promtail/configuration/#example-journal-config

@@ -5,8 +5,10 @@ set -euxo pipefail
 # see https://hub.docker.com/r/grafana/loki/tags
 loki_version="2.3.0"
 
-mkdir -p loki
-cd loki
+# destroy the existing loki container and data.
+docker rm --force loki && rm -rf ~/loki && mkdir ~/loki
+
+cd ~/loki
 
 cp /vagrant/loki-config.yml .
 
