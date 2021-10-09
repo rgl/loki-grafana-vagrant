@@ -10,7 +10,7 @@ loki_ip_address="${1:-10.11.12.2}"
 docker plugin install \
     --alias loki \
     --grant-all-permissions \
-    grafana/loki-docker-driver:2.2.1 \
+    grafana/loki-docker-driver:2.3.0 \
         LOG_LEVEL=debug
 docker plugin ls
 
@@ -73,5 +73,5 @@ docker run \
     --restart unless-stopped \
     --name date-ticker \
     --label workflow_id=test-workflow-id \
-    alpine:3.13 \
+    alpine:3.14 \
         sh -c 'while true; do date; sleep 15; done'

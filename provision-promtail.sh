@@ -5,7 +5,7 @@ loki_ip_address="${1:-10.11.12.2}"
 
 # see https://github.com/grafana/loki/releases
 # see https://hub.docker.com/r/grafana/promtail/tags
-loki_version="2.2.1"
+loki_version="2.3.0"
 
 mkdir promtail
 cd promtail
