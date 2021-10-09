@@ -12,12 +12,32 @@ scrape_configs:
   - job_name: journal
     journal:
       max_age: 12h
+      json: false
       labels:
         job: systemd-journal
+        worker_id: test-worker-id
     # see https://www.freedesktop.org/software/systemd/man/systemd.journal-fields.html#Trusted%20Journal%20Fields
+    # see https://grafana.com/docs/loki/latest/clients/promtail/scraping/#journal-scraping-linux-only
     # NB use `journalctl -n 1 -o json | jq .` to see an actual journal log message (including metadata).
+    # NB use `journalctl -n 1 -o json CONTAINER_NAME=date-ticker | jq .` to see a container log message.
     relabel_configs:
       - source_labels: [__journal__hostname]
         target_label: host
       - source_labels: [__journal__systemd_unit]
         target_label: source
+      - source_labels: [__journal_container_name]
+        target_label: _container_name
+      - source_labels: [__journal_workflow_id]
+        target_label: workflow_id
+    pipeline_stages:
+      - match:
+          selector: '{source="docker.service"}'
+          stages:
+            - template:
+                source: job
+                template: container
+            - labels:
+                job:
+                source: _container_name
+      - labeldrop:
+          - _container_name

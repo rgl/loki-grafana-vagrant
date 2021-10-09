@@ -6,12 +6,17 @@ The `loki` machine:
 
 * Hosts loki.
 * Hosts Grafana.
-* Configures promtail to send the journal logs to `loki`.
+* Configures promtail to send the journal to `loki`.
 
-The `ubuntu` machine:
+The `ubuntu1` machine:
 
-* Configures docker to send the container logs to `loki`.
-* Configures promtail to send the journal logs to `loki`.
+* Configures loki docker driver to send the container logs to `loki`.
+* Configures promtail to send the journal to `loki`.
+
+The `ubuntu2` machine:
+
+* Configures docker to send the container logs to the journal.
+* Configures promtail to send the journal to `loki`.
 
 ## Usage
 
@@ -21,10 +26,10 @@ Start the `loki` machine:
 time vagrant up --provider=libvirt --no-destroy-on-error --no-tty loki
 ```
 
-Start the `ubuntu` machine:
+Start the loki client machines:
 
 ```bash
-time vagrant up --provider=libvirt --no-destroy-on-error --no-tty ubuntu
+time vagrant up --provider=libvirt --no-destroy-on-error --no-tty ubuntu1 ubuntu2
 ```
 
 Explore the logs with Grafana:
@@ -39,8 +44,8 @@ vagrant ssh loki
 # list all series/streams.
 logcli series '{}' | sort
 
-# list all series/streams from the ubuntu host.
-logcli series '{host="ubuntu"}' | sort
+# list all series/streams from the ubuntu1 host.
+logcli series '{host="ubuntu1"}' | sort
 
 # list all labels.
 logcli labels -q | sort
@@ -82,6 +87,10 @@ logcli query --tail --output raw '{job="container",source="date-ticker"}'
   * https://grafana.com/docs/loki/latest/installation/docker/
 * Loki Docker Driver:
   * [Configuring the Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/)
+* Journald Docker Driver:
+  * [Journal Scraping (Linux Only)](https://grafana.com/docs/loki/latest/clients/promtail/scraping/#journal-scraping-linux-only)
+  * [Journald logging driver](https://docs.docker.com/config/containers/logging/journald/)
+  * [Configure logging drivers](https://docs.docker.com/config/containers/logging/configure/)
 * Grafana:
   * https://grafana.com/docs/grafana/latest/administration/configure-docker/
   * https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources

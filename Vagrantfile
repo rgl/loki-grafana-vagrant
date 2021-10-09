@@ -47,25 +47,34 @@ Vagrant.configure('2') do |config|
     config.vm.provision :shell, path: 'provision-grafana.sh', args: [$loki_ip_address]
   end
 
-  config.vm.define :ubuntu do |config|
-    config.vm.hostname = 'ubuntu.test'
-    if $loki_bridge_name
-      config.vm.network :public_network,
-        ip: $ubuntu_ip_address,
-        dev: $loki_bridge_name
-    else
-      config.vm.network :private_network,
-        ip: $ubuntu_ip_address,
-        libvirt__dhcp_enabled: false,
-        libvirt__forward_mode: 'none'
+  [
+    true,
+    false,
+  ].each_with_index do |with_loki_docker_driver, i|
+    config.vm.define "ubuntu#{i+1}" do |config|
+      config.vm.hostname = "ubuntu#{i+1}.test"
+      if $loki_bridge_name
+        config.vm.network :public_network,
+          ip: $ubuntu_ip_address,
+          dev: $loki_bridge_name
+      else
+        config.vm.network :private_network,
+          ip: $ubuntu_ip_address,
+          libvirt__dhcp_enabled: false,
+          libvirt__forward_mode: 'none'
+      end
+      config.vm.provider :libvirt do |lv, config|
+        lv.memory = 2*1024
+      end
+      config.vm.provision :shell, path: 'provision-base.sh'
+      config.vm.provision :shell, path: 'provision-docker.sh'
+      if with_loki_docker_driver
+        config.vm.provision :shell, path: 'provision-loki-docker-driver.sh', args: [$loki_ip_address]
+      else
+        config.vm.provision :shell, path: 'provision-journald-docker-driver.sh'
+      end
+      config.vm.provision :shell, path: 'provision-promtail.sh', args: [$loki_ip_address]
     end
-    config.vm.provider :libvirt do |lv, config|
-      lv.memory = 2*1024
-    end
-    config.vm.provision :shell, path: 'provision-base.sh'
-    config.vm.provision :shell, path: 'provision-docker.sh'
-    config.vm.provision :shell, path: 'provision-loki-docker-driver.sh', args: [$loki_ip_address]
-    config.vm.provision :shell, path: 'provision-promtail.sh', args: [$loki_ip_address]
   end
 
   config.trigger.before :up do |trigger|
