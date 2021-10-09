@@ -3,6 +3,6 @@ datasources:
   - name: Loki
     type: loki
     access: proxy
-    url: @@loki_base_url@@
+    url: "@@loki_base_url@@"
     jsonData:
       maxLines: 1000
