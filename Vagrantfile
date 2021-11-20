@@ -31,8 +31,10 @@ Vagrant.configure('2') do |config|
     config.vm.hostname = 'loki.test'
     if $loki_bridge_name
       config.vm.network :public_network,
-        ip: $loki_ip_address,
-        dev: $loki_bridge_name
+        dev: $loki_bridge_name,
+        mode: 'bridge',
+        type: 'bridge',
+        ip: $loki_ip_address
     else
       config.vm.network :private_network,
         ip: $loki_ip_address,
@@ -55,8 +57,10 @@ Vagrant.configure('2') do |config|
       config.vm.hostname = "ubuntu#{i+1}.test"
       if $loki_bridge_name
         config.vm.network :public_network,
-          ip: $ubuntu_ip_address,
-          dev: $loki_bridge_name
+          dev: $loki_bridge_name,
+          mode: 'bridge',
+          type: 'bridge',
+          ip: $ubuntu_ip_address
       else
         config.vm.network :private_network,
           ip: $ubuntu_ip_address,
