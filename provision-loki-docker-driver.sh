@@ -10,7 +10,7 @@ loki_ip_address="${1:-10.11.12.2}"
 docker plugin install \
     --alias loki \
     --grant-all-permissions \
-    grafana/loki-docker-driver:2.4.1 \
+    grafana/loki-docker-driver:2.4.2 \
         LOG_LEVEL=debug
 docker plugin ls
 
