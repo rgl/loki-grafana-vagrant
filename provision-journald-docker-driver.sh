@@ -30,5 +30,5 @@ docker run \
     --restart unless-stopped \
     --name date-ticker \
     --label workflow_id=test-workflow-id \
-    alpine:3.14 \
+    alpine:3.15 \
         sh -c 'while true; do date; sleep 15; done'
